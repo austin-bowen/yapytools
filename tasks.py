@@ -53,6 +53,4 @@ def publish(c, test: bool = True):
 def make_docs(c):
     """Generate the documentation files."""
 
-    c.run('sphinx-apidoc -f --maxdepth 1 -o docs src/yapytools.py')
-    c.run('rm docs/modules.rst')
     c.run('cd docs && make html')

@@ -1,5 +1,9 @@
 .coverage
 .idea/
+.pypirc*
 __pycache__/
+build/
+dist/
+docs/_build/
 venv/
-*.egg-info/
+src/yapytools.egg-info/
