@@ -8,31 +8,6 @@ __version__ = '0.0.1'
 from typing import Callable, Iterable, Tuple
 
 
-def ranges(*stops: int) -> Iterable[Tuple[int, ...]]:
-    """
-    Yield all possible combinations of values for the given ranges.
-
-    Example:
-
-        >>> for x, y, c in ranges(800, 600, 3):
-        >>>     value = image[x, y, c]
-
-    This is more memory efficient than doing e.g.
-
-        >>> for x, y, c in itertools.product(range(800), range(600), range(3)):
-        >>>     ...
-
-    because it does not keep a list of prviously used values in memory.
-    """
-
-    if len(stops) <= 1:
-        yield from ((it,) for it in range(*stops))
-    else:
-        for prefix in ranges(*stops[:-1]):
-            for suffix in range(stops[-1]):
-                yield prefix + (suffix,)
-
-
 def maps(iterable: Iterable, *functions: Callable) -> Iterable:
     """
     Returns an iterator that applies the given functions to each item in the
@@ -66,3 +41,28 @@ def pipe(function0: Callable, *functions: Callable) -> Callable:
         return result
 
     return pipe_
+
+
+def ranges(*stops: int) -> Iterable[Tuple[int, ...]]:
+    """
+    Yield all possible combinations of values for the given ranges.
+
+    Example:
+
+        >>> for x, y, c in ranges(800, 600, 3):
+        >>>     value = image[x, y, c]
+
+    This is more memory efficient than doing e.g.
+
+        >>> for x, y, c in itertools.product(range(800), range(600), range(3)):
+        >>>     ...
+
+    because it does not keep a list of prviously used values in memory.
+    """
+
+    if len(stops) <= 1:
+        yield from ((it,) for it in range(*stops))
+    else:
+        for prefix in ranges(*stops[:-1]):
+            for suffix in range(stops[-1]):
+                yield prefix + (suffix,)
