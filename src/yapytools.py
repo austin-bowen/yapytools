@@ -61,7 +61,7 @@ def pipe(function0: Callable, *functions: Callable) -> Callable:
 
     def pipe_(*args, **kwargs):
         result = function0(*args, **kwargs)
-        for function in functions[1:]:
+        for function in functions:
             result = function(result)
         return result
 
