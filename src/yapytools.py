@@ -8,6 +8,26 @@ __version__ = '0.0.1'
 from typing import Callable, Iterable, Tuple
 
 
+def filters(iterable: Iterable, *functions: Callable) -> Iterable:
+    """
+    Returns an iterator that applies the given filters to the iterable.
+
+    Example:
+        >>> values = filters(
+        >>>     range(10),
+        >>>     lambda it: it > 3,
+        >>>     lambda it: it % 2 == 0,
+        >>> )
+        >>> print(list(values))
+        [4, 6, 8]
+    """
+
+    for function in functions:
+        iterable = filter(function, iterable)
+
+    yield from iterable
+
+
 def maps(iterable: Iterable, *functions: Callable) -> Iterable:
     """
     Returns an iterator that applies the given functions to each item in the
