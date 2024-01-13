@@ -1,0 +1,65 @@
+# General pyproject.toml options:
+# https://packaging.python.org/en/latest/guides/writing-pyproject-toml/
+#
+# setuptools-specific options:
+# https://setuptools.pypa.io/en/latest/userguide/pyproject_config.html
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "yapytools"
+authors = [
+    { name = "Austin Bowen", email = "austin.bowen.314@gmail.com" },
+]
+description = "Yet Another Python Tools Library (yapytools) is a collection of useful Python utilities not found in the standard library."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.8"
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3 :: Only",
+]
+dynamic = ["version"]
+dependencies = []
+
+[project.optional-dependencies]
+all = [
+    "yapytools[dev]",
+    "yapytools[docs]",
+    "yapytools[test]",
+]
+dev = [
+    "build",
+    "invoke",
+    "twine",
+]
+docs = [
+    "myst-parser",
+    "sphinx",
+    "sphinx-rtd-theme",
+]
+test = [
+    "coverage",
+    "parameterized",
+]
+
+[project.urls]
+Homepage = "https://github.com/austin-bowen/yapytools"
+Issues = "https://github.com/austin-bowen/yapytools/issues"
+
+[tool.setuptools.dynamic]
+version = { attr = "yapytools.__version__" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["yapytools*"]
