@@ -94,6 +94,19 @@ def filters(iterable: Iterable, *functions: Callable) -> Iterable:
     yield from iterable
 
 
+def flatten(iterable: Iterable[Iterable[T]]) -> Iterable[T]:
+    """
+    Returns a single iterable of all elements from all iterables in the given
+    iterable.
+
+    Inspired by Kotlin's `flatten <https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/flatten.html>`_
+    function.
+    """
+
+    for items in iterable:
+        yield from items
+
+
 def maps(iterable: Iterable, *functions: Callable) -> Iterable:
     """
     Returns an iterator that applies the given functions to each item in the
