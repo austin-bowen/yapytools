@@ -69,6 +69,11 @@ def associate_with(
     )
 
 
+def filter_not_none(iterable: Iterable[T]) -> Iterable[T]:
+    """Filter out None values from iterable."""
+    return filter(lambda it: it is not None, iterable)
+
+
 def filters(iterable: Iterable, *functions: Callable) -> Iterable:
     """
     Returns an iterator that applies the given filters to the iterable.

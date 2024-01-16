@@ -1,6 +1,16 @@
 import unittest
 
-from yapytools import filters
+from yapytools import filters, filter_not_none
+
+
+class FilterNotNoneTest(unittest.TestCase):
+    def test(self):
+        result = filter_not_none([None, None, 1, 2, None, 3, None, 4])
+
+        self.assertListEqual(
+            list(result),
+            [1, 2, 3, 4],
+        )
 
 
 class FiltersTest(unittest.TestCase):
