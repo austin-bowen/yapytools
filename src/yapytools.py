@@ -5,7 +5,68 @@ utilities not found in the standard library.
 
 __version__ = '0.0.1'
 
-from typing import Callable, Iterable, Tuple, Union, Sequence
+from typing import Callable, Iterable, Tuple, Union, Sequence, TypeVar, Dict
+
+T = TypeVar('T')
+K = TypeVar('K')
+V = TypeVar('V')
+
+
+def associate(
+        iterable: Iterable[T],
+        transform: Callable[[T], Tuple[K, V]]
+) -> Dict[K, V]:
+    """
+    Returns a dict containing key-value pairs provided by the transform
+    function applied to the elements of the iterable.
+
+    Inspired by Kotlin's `associate <https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/associate.html>`_
+    function.
+    """
+
+    return dict(map(transform, iterable))
+
+
+def associate_by(
+        iterable: Iterable[V],
+        key_selector: Callable[[V], K]
+) -> Dict[K, V]:
+    """
+    Returns a dict containing the elements from the given iterable indexed by
+    the key returned from the ``key_selector`` function applied to each
+    element.
+
+    If any two elements have the same key returned by ``key_selector``,
+    then the last one gets added to the dict.
+
+    Inspired by Kotlin's `associateBy <https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/associate-by.html>`_
+    function.
+    """
+
+    return dict(
+        (key_selector(v), v)
+        for v in iterable
+    )
+
+
+def associate_with(
+        iterable: Iterable[K],
+        value_selector: Callable[[K], V]
+) -> Dict[K, V]:
+    """
+    Returns a dict where keys are elements from the given iterable, and values
+    are produced by the ``value_selector`` function applied to each element.
+
+    If any two elements are equal, the last one gets added to the dict.
+
+    Inspired by Kotlin's `associateWith <https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/associate-with.html>`_
+    function.
+    """
+
+    return dict(
+        (k, value_selector(k))
+        for k in iterable
+    )
 
 
 def filters(iterable: Iterable, *functions: Callable) -> Iterable:
