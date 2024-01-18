@@ -5,7 +5,7 @@ utilities not found in the standard library.
 
 __version__ = '0.0.1'
 
-from typing import Callable, Iterable, Tuple, Union, Sequence, TypeVar, Dict
+from typing import Callable, Iterable, Tuple, Union, Sequence, TypeVar, Dict, Optional
 
 T = TypeVar('T')
 K = TypeVar('K')
@@ -108,6 +108,51 @@ def filters(iterable: Iterable, *functions: Callable) -> Iterable:
         iterable = filter(function, iterable)
 
     yield from iterable
+
+
+def find(iterable: Iterable[T], predicate: Callable[[T], bool]) -> Optional[T]:
+    """
+    Returns the first element matching the given predicate,
+    or ``None`` if no such element was found.
+
+    Inspired by Kotlin's `find <https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/find.html>`_
+    function.
+    """
+
+    for item in iterable:
+        if predicate(item):
+            return item
+
+    return None
+
+
+def find_last(
+        iterable: Iterable[T],
+        predicate: Callable[[T], bool],
+) -> Optional[T]:
+    """
+    Returns the last element matching the given predicate,
+    or ``None`` if no such element was found.
+
+    Inspired by Kotlin's `findLast <https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/find-last.html>`_
+    function.
+    """
+
+    last_item = None
+
+    # Traverse sequences backwards and return first matching item
+    if isinstance(iterable, Sequence):
+        for i in range(len(iterable) - 1, -1, -1):
+            item = iterable[i]
+            if predicate(item):
+                return item
+    # Otherwise, have to iterate over all items
+    else:
+        for item in iterable:
+            if predicate(item):
+                last_item = item
+
+    return last_item
 
 
 def flatten(iterable: Iterable[Iterable[T]]) -> Iterable[T]:
