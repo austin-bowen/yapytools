@@ -69,6 +69,22 @@ def associate_with(
     )
 
 
+def count(
+        iterable: Iterable[K],
+        predicate: Callable[[K], bool],
+) -> int:
+    """
+    Returns the number of elements matching the given predicate.
+
+    Inspired by Kotlin's `count <https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/count.html>`_
+    function.
+    """
+
+    return sum(
+        1 for item in iterable if predicate(item)
+    )
+
+
 def filter_not_none(iterable: Iterable[T]) -> Iterable[T]:
     """Filter out None values from iterable."""
     return filter(lambda it: it is not None, iterable)
