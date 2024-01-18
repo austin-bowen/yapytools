@@ -5,7 +5,17 @@ utilities not found in the standard library.
 
 __version__ = '0.0.1'
 
-from typing import Callable, Iterable, Tuple, Union, Sequence, TypeVar, Dict, Optional
+from typing import (
+    Callable,
+    Dict,
+    Iterable,
+    List,
+    Optional,
+    Sequence,
+    Tuple,
+    TypeVar,
+    Union,
+)
 
 T = TypeVar('T')
 K = TypeVar('K')
@@ -166,6 +176,67 @@ def flatten(iterable: Iterable[Iterable[T]]) -> Iterable[T]:
 
     for items in iterable:
         yield from items
+
+
+def group_by(
+        iterable: Iterable[T],
+        key_selector: Callable[[T], K],
+) -> Dict[K, List[T]]:
+    """
+    Groups elements of the iterable by the key returned by the given
+    ``key_selector`` function applied to each element, and returns a
+    dict where each group key is associated with a list of
+    corresponding elements.
+
+    Example:
+        >>> group_by(
+        ...     range(10),
+        ...     lambda it: 'odd' if it % 2 else 'even',
+        ... )
+        {'even': [0, 2, 4, 6, 8], 'odd': [1, 3, 5, 7, 9]}
+
+    Inspired by Kotlin's `groupBy <https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/group-by.html>`_
+    function.
+    """
+
+    return group_by_to(iterable, key_selector, lambda it: it)
+
+
+def group_by_to(
+        iterable: Iterable[T],
+        key_selector: Callable[[T], K],
+        value_transform: Callable[[T], V],
+) -> Dict[K, List[V]]:
+    """
+    Groups values returned by the ``value_transform`` function applied to each
+    element of the iterable by the key returned by the given ``key_selector``
+    function applied to the element, and returns a dict of each group key
+    associated with a list of corresponding values.
+
+    Example:
+        >>> group_by_to(
+        ...     range(10),
+        ...     key_selector=lambda it: 'odd' if it % 2 else 'even',
+        ...     value_transform=lambda it: -it,
+        ... )
+        {'even': [0, -2, -4, -6, -8], 'odd': [-1, -3, -5, -7, -9]}
+
+    Inspired by Kotlin's `groupByTo <https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/group-by-to.html>`_
+    function.
+    """
+
+    result = {}
+
+    for item in iterable:
+        key = key_selector(item)
+        value = value_transform(item)
+
+        if key not in result:
+            result[key] = [value]
+        else:
+            result[key].append(value)
+
+    return result
 
 
 def maps(iterable: Iterable, *functions: Callable) -> Iterable:
