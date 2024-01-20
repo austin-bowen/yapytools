@@ -3,6 +3,8 @@ Yet Another Python Tools Library (yapytools) is a collection of useful Python
 utilities not found in the standard library.
 """
 
+import itertools
+import operator
 from typing import (
     Callable,
     Dict,
@@ -12,10 +14,10 @@ from typing import (
     Sequence,
     Tuple,
     TypeVar,
-    Union,
+    Union, Set,
 )
 
-from yapytools.predicates import is_not_none
+from yapytools.predicates import is_not_none, Predicate
 
 T = TypeVar('T')
 K = TypeVar('K')
@@ -322,3 +324,132 @@ def _ranges(stops: Sequence[Tuple[int, ...]]) -> Iterable[Tuple[int, ...]]:
         for prefix in _ranges(stops[:-1]):
             for suffix in range(*stop):
                 yield prefix + (suffix,)
+
+
+def unique(iterable: Iterable[T]) -> Iterable[T]:
+    """
+    Returns an iterable of only the unique items in the given iterable,
+    in the same order in which they appear.
+    """
+
+    prev_values = set()
+
+    def is_unique(value_: T) -> bool:
+        value_is_unique_ = value_ not in prev_values
+        prev_values.add(value_)
+        return value_is_unique_
+
+    return filter(is_unique, iterable)
+
+
+class Stream(Iterable):
+    """
+    Allows applying filtering, mapping, and accumulation functions to an
+    iterable in a convenient way.
+
+    Example:
+        >>> result = (
+        >>>     Stream(range(10))
+        >>>     .filter(lambda it: it > 4)
+        >>>     .map(lambda it: it * 10)
+        >>>     .map(str)
+        >>>     .to_list()
+        >>> )
+        >>> print(result)
+        ['50', '60', '70', '80', '90']
+
+    Inspired by Java's `Stream API <https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html>`_.
+    """
+
+    iterable: Iterable[T]
+
+    def __init__(self, iterable: Iterable[T]):
+        self.iterable = iterable
+
+    @classmethod
+    def of(cls, *items) -> 'Stream':
+        """Returns a `Stream` of the args passed to this function."""
+        return Stream(items)
+
+    def __iter__(self):
+        return iter(self.iterable)
+
+    def accumulate(
+            self,
+            function: Callable[[T, T], T] = operator.add,
+            initial: T = None,
+    ) -> 'Stream':
+        """See `itertools.accumulate <https://docs.python.org/3/library/itertools.html#itertools.accumulate>`_."""
+        return Stream(itertools.accumulate(
+            self,
+            func=function,
+            initial=initial,
+        ))
+
+    def filter(self, function: Predicate) -> 'Stream':
+        """
+        Returns a :class:`Stream` with the given filter applied to the items.
+        """
+        return Stream(filter(function, self))
+
+    def filter_not_none(self) -> 'Stream':
+        """
+        Returns a :class:`Stream` with the `None` items removed.
+        See :func:`filter_not_none`.
+        """
+        return Stream(filter_not_none(self))
+
+    def flatten(self) -> 'Stream':
+        """See :func:`flatten`."""
+        return Stream(flatten(self))
+
+    def map(self, function: Callable[[T], V]) -> 'Stream':
+        """
+        Returns a :class:`Stream` with the given mapping applied to each item.
+        """
+        return Stream(map(function, self))
+
+    def unique(self) -> 'Stream':
+        """
+        Returns a :class:`Stream` of only the unique items in the stream,
+        in the order in which they occur. See :func:`unique`.
+        """
+        return Stream(unique(self))
+
+    def count(self) -> int:
+        """Returns the number of items in the stream."""
+        return count(self, identity)
+
+    def reduce(
+            self,
+            function: Callable[[T, T], T] = operator.add,
+            initial: T = None,
+            default: T = None,
+    ) -> Optional[T]:
+        """Returns the last result of :func:`Stream.accumulate`."""
+        return self.accumulate(function=function, initial=initial).last(default=default)
+
+    def to_list(self) -> List[T]:
+        """Returns a list of items in the stream."""
+        return list(self)
+
+    def to_set(self) -> Set[T]:
+        """Returns a set of items in the stream."""
+        return set(self)
+
+    def to_tuple(self) -> Tuple[T]:
+        """Returns a tuple of items in the stream."""
+        return tuple(self)
+
+    def first(self, default: T = None) -> Optional[T]:
+        """Returns the first item in the stream."""
+        return next(iter(self), default)
+
+    def last(self, default: T = None) -> Optional[T]:
+        """Returns the last item in the stream."""
+
+        last = default
+        for item in self:
+            last = item
+
+        return last

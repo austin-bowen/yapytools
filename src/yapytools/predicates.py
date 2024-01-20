@@ -1,3 +1,10 @@
+from typing import Callable, TypeVar
+
+T = TypeVar('T')
+
+Predicate = Callable[[T], bool]
+
+
 def is_false(value) -> bool:
     return not bool(value)
 
