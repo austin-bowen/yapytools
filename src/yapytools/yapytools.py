@@ -3,8 +3,6 @@ Yet Another Python Tools Library (yapytools) is a collection of useful Python
 utilities not found in the standard library.
 """
 
-__version__ = '0.0.1'
-
 from typing import (
     Callable,
     Dict,

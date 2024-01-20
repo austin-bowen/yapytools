@@ -11,6 +11,16 @@ Welcome to yapytools' documentation!
    :undoc-members:
    :show-inheritance:
 
+.. automodule:: yapytools.yapytools
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: yapytools.predicates
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 
 Indices and tables
 ==================
