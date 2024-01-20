@@ -386,6 +386,9 @@ class Stream(Iterable):
             initial=initial,
         ))
 
+    def enumerate(self, start: int = 0) -> 'Stream':
+        return Stream(enumerate(self, start=start))
+
     def filter(self, function: Predicate) -> 'Stream':
         """
         Returns a :class:`Stream` with the given filter applied to the items.
@@ -409,6 +412,12 @@ class Stream(Iterable):
         """
         return Stream(map(function, self))
 
+    def reversed(self) -> 'Stream':
+        return Stream(reversed(self.iterable))
+
+    def sorted(self, key=None, reverse=False) -> 'Stream':
+        return Stream(sorted(self, key=key, reverse=reverse))
+
     def unique(self) -> 'Stream':
         """
         Returns a :class:`Stream` of only the unique items in the stream,
@@ -416,9 +425,21 @@ class Stream(Iterable):
         """
         return Stream(unique(self))
 
+    def zip(self, *iterables: Iterable, strict: bool = False) -> 'Stream':
+        return Stream(zip(self, *iterables, strict=strict))
+
+    def any(self) -> bool:
+        return any(self)
+
     def count(self) -> int:
         """Returns the number of items in the stream."""
         return count(self, identity)
+
+    def max(self) -> T:
+        return max(self)
+
+    def min(self) -> T:
+        return min(self)
 
     def reduce(
             self,
@@ -428,6 +449,9 @@ class Stream(Iterable):
     ) -> Optional[T]:
         """Returns the last result of :func:`Stream.accumulate`."""
         return self.accumulate(function=function, initial=initial).last(default=default)
+
+    def sum(self) -> T:
+        return sum(self)
 
     def to_list(self) -> List[T]:
         """Returns a list of items in the stream."""
