@@ -17,6 +17,8 @@ from typing import (
     Union,
 )
 
+from yapytools.predicates import is_not_none
+
 T = TypeVar('T')
 K = TypeVar('K')
 V = TypeVar('V')
@@ -97,7 +99,7 @@ def count(
 
 def filter_not_none(iterable: Iterable[T]) -> Iterable[T]:
     """Filter out None values from iterable."""
-    return filter(lambda it: it is not None, iterable)
+    return filter(is_not_none, iterable)
 
 
 def filters(iterable: Iterable, *functions: Callable) -> Iterable:
@@ -105,10 +107,11 @@ def filters(iterable: Iterable, *functions: Callable) -> Iterable:
     Returns an iterator that applies the given filters to the iterable.
 
     Example:
+        >>> from yapytools.predicates import is_even
         >>> values = filters(
         >>>     range(10),
         >>>     lambda it: it > 3,
-        >>>     lambda it: it % 2 == 0,
+        >>>     is_even,
         >>> )
         >>> print(list(values))
         [4, 6, 8]
@@ -189,9 +192,10 @@ def group_by(
     corresponding elements.
 
     Example:
+        >>> from yapytools.predicates import is_even
         >>> group_by(
         ...     range(10),
-        ...     lambda it: 'odd' if it % 2 else 'even',
+        ...     lambda it: 'even' if is_even(it) else 'odd',
         ... )
         {'even': [0, 2, 4, 6, 8], 'odd': [1, 3, 5, 7, 9]}
 
@@ -199,7 +203,7 @@ def group_by(
     function.
     """
 
-    return group_by_to(iterable, key_selector, lambda it: it)
+    return group_by_to(iterable, key_selector, identity)
 
 
 def group_by_to(
@@ -214,9 +218,10 @@ def group_by_to(
     associated with a list of corresponding values.
 
     Example:
+        >>> from yapytools.predicates import is_even
         >>> group_by_to(
         ...     range(10),
-        ...     key_selector=lambda it: 'odd' if it % 2 else 'even',
+        ...     key_selector=lambda it: 'even' if is_even(it) else 'odd',
         ...     value_transform=lambda it: -it,
         ... )
         {'even': [0, -2, -4, -6, -8], 'odd': [-1, -3, -5, -7, -9]}
@@ -237,6 +242,11 @@ def group_by_to(
             result[key].append(value)
 
     return result
+
+
+def identity(value: T) -> T:
+    """Simply returns the input ``value`` unchanged."""
+    return value
 
 
 def maps(iterable: Iterable, *functions: Callable) -> Iterable:

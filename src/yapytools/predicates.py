@@ -6,6 +6,22 @@ def is_true(value) -> bool:
     return bool(value)
 
 
+def is_none(value) -> bool:
+    return value is None
+
+
+def is_not_none(value) -> bool:
+    return value is not None
+
+
+def is_zero(value) -> bool:
+    return value == 0
+
+
+def is_not_zero(value) -> bool:
+    return value != 0
+
+
 def is_positive(value) -> bool:
     return value > 0
 
