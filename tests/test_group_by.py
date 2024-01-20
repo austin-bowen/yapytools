@@ -1,6 +1,7 @@
 import unittest
 
 from yapytools import group_by, group_by_to
+from yapytools.predicates import is_even
 
 
 class GroupByTest(unittest.TestCase):
@@ -28,7 +29,7 @@ class GroupByToTest(unittest.TestCase):
     def test(self):
         result = group_by_to(
             range(10),
-            key_selector=lambda it: 'odd' if it % 2 else 'even',
+            key_selector=lambda it: 'even' if is_even(it) else 'odd',
             value_transform=lambda it: -it,
         )
 
@@ -40,7 +41,7 @@ class GroupByToTest(unittest.TestCase):
     def test_empty_iterable_returns_empty_dict(self):
         result = group_by_to(
             [],
-            key_selector=lambda it: 'odd' if it % 2 else 'even',
+            key_selector=lambda it: 'even' if is_even(it) else 'odd',
             value_transform=lambda it: -it,
         )
 

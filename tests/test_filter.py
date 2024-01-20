@@ -1,6 +1,7 @@
 import unittest
 
 from yapytools import filters, filter_not_none
+from yapytools.predicates import is_even
 
 
 class FilterNotNoneTest(unittest.TestCase):
@@ -18,7 +19,7 @@ class FiltersTest(unittest.TestCase):
         results = filters(
             range(10),
             lambda it: it > 3,
-            lambda it: it % 2 == 0,
+            is_even,
         )
 
         self.assertListEqual(
@@ -30,7 +31,7 @@ class FiltersTest(unittest.TestCase):
         result = filters(
             [],
             lambda it: it > 3,
-            lambda it: it % 2 == 0,
+            is_even,
         )
 
         self.assertListEqual(
